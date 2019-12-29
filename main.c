@@ -4,6 +4,22 @@
 #include "cards.h"
 #include "blackjack.h"
 
+void drawGame(blackjack_game_t *pGame, char *message){
+    int yMax, xMax;
+    getmaxyx(stdscr, yMax, xMax);
+
+    clear();
+
+    printw("Dealer cards:\n");
+    printList(pGame->dealerCards);
+
+    printw("\n\nYour cards:\n");
+    printList(pGame->playerCards);
+
+    move(yMax - 1, 0);
+    printw("%s", message);
+}
+
 void playBlackJack(void){
     blackjack_game_t *pGame = blackjack_start();
 
@@ -18,14 +34,7 @@ void playBlackJack(void){
     blackjack_result_t handValue;
     char option;
     while (gameAlive > 0 && playersMove > 0){
-        clear();
-        printw("Dealer cards:\n");
-        printList(pGame->dealerCards);
-
-        printw("\n\nYour cards:\n");
-        printList(pGame->playerCards);
-
-        printw("Would you like to [H]it or [S]tand? ");
+        drawGame(pGame, "Would you like to [H]it or [S]tand?");
         option = toupper(getch());
 
         switch(option){
@@ -36,15 +45,12 @@ void playBlackJack(void){
             playersMove = 0;
             break;
         default:
-            printw("Didn't quite get that, let's try again");
             break;
         };
 
         handValue = blackjack_calculate(pGame->playerCards);
         if (handValue.value > 21){
-            printw("\n\n");
-            printList(pGame->playerCards);
-            printw("\nYou're bust!");
+            drawGame(pGame, "You're bust!");
             gameAlive = 0;
             getch();
         }
@@ -57,18 +63,17 @@ void playBlackJack(void){
         do {
             blackjack_deal(pGame, pGame->dealerCards);
 
-            printw("\n\nDealer cards:\n");
-            printList(pGame->dealerCards);
+            drawGame(pGame, "Dealer plays");
 
             dealerValue = blackjack_calculate(pGame->dealerCards);
         } while (dealerValue.value < 17);
 
         if (dealerValue.value > 21){
-            printw("\n\nYou win!");
+            drawGame(pGame, "You win!");
         } else if (handValue.value > dealerValue.value) {
-            printw("\n\nYou win!");
+            drawGame(pGame, "You win!");
         } else {
-            printw("\n\nDealer wins!");
+            drawGame(pGame, "Dealer wins!");
         }
 
         getch();
