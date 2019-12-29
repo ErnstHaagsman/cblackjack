@@ -32,4 +32,18 @@ struct CardList {
 
 typedef struct CardList cardlist_t;
 
+// CardList methods
+
+void cardList_addFirst (cardlist_t *pList, card_t *pCard);
+void cardList_addLast (cardlist_t *pList, card_t *pCard);
+card_t* cardList_removeIndex(cardlist_t *pList, int index);
+card_t* cardList_removeFirst(cardlist_t *pList);
+cardlist_t* newDeck(void);
+
+// Utility functions
+
+char* printSuit(Suit suit);
+char* printCard(card_t* pCard);
+void printList(cardlist_t *pDeck);
+
 #endif // CARDS_H
