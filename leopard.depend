@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1577635547 source:/home/eh/projects/leopard/main.c
+	<stdio.h>
+	<stdlib.h>
+	<curses.h>
+
+1577645133 source:/home/eh/projects/leopard/cards.c
+
