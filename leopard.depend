@@ -1,8 +1,24 @@
 # depslib dependency file v1.0
-1577635547 source:/home/eh/projects/leopard/main.c
+1577647907 source:/home/eh/projects/leopard/main.c
 	<stdio.h>
 	<stdlib.h>
 	<curses.h>
+	"cards.h"
+	"blackjack.h"
 
-1577645133 source:/home/eh/projects/leopard/cards.c
+1577645969 source:/home/eh/projects/leopard/cards.c
+	<stdio.h>
+	<stdlib.h>
+	"cards.h"
+
+1577645977 /home/eh/projects/leopard/cards.h
+
+1577647590 source:/home/eh/projects/leopard/blackjack.c
+	<stdio.h>
+	<stdlib.h>
+	"blackjack.h"
+	"cards.h"
+
+1577647532 /home/eh/projects/leopard/blackjack.h
+	"cards.h"
 

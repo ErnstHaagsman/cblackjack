@@ -2,77 +2,35 @@
 #include <stdlib.h>
 #include <curses.h>
 #include "cards.h"
-
-typedef struct {
-    int value;
-    int aces;
-} blackjack_t;
-
-blackjack_t cardList_blackjack(cardlist_t *pList){
-    blackjack_t result = {
-        .value = 0,
-        .aces = 0
-    };
-
-    cardnode_t *pNode = pList->first;
-    card_t *pCard;
-
-    while (pNode != NULL){
-        pCard = pNode->card;
-        if (pCard->rank <= 10){
-            result.value += pCard->rank;
-        } else if (pCard->rank < 14) {
-            // All face cards are worth 10 points
-            result.value += 10;
-        } else {
-            // An ace is 11 for now
-            result.value += 11;
-            result.aces++;
-        }
-        pNode = pNode->next;
-    }
-
-    // Reduce aces to 1 point, if needed
-    while (result.value > 21 && result.aces > 0){
-        result.value -= 10;
-        result.aces--;
-    }
-
-    return result;
-}
+#include "blackjack.h"
 
 void playBlackJack(void){
-    cardlist_t *pDeck = newDeck();
+    blackjack_game_t *pGame = blackjack_start();
 
-    cardlist_t dealerHand = { NULL, 0 };
-    card_t *pFirstDealerCard = cardList_removeFirst(pDeck);
-    cardList_addLast(&dealerHand, pFirstDealerCard);
+    blackjack_deal(pGame, pGame->dealerCards);
 
-    printw("Dealer open card: %s", printCard(pFirstDealerCard));
-
-    cardlist_t playerHand = {NULL, 0};
-
-    card_t *pCard;
     for (int i = 0; i < 2; i++){
-        pCard = cardList_removeFirst(pDeck);
-        cardList_addLast(&playerHand, pCard);
+        blackjack_deal(pGame, pGame->playerCards);
     }
 
     int gameAlive = 1;
     int playersMove = 1;
-    blackjack_t handValue;
+    blackjack_result_t handValue;
     char option;
     while (gameAlive > 0 && playersMove > 0){
+        clear();
+        printw("Dealer cards:\n");
+        printList(pGame->dealerCards);
+
         printw("\n\nYour cards:\n");
-        printList(&playerHand);
+        printList(pGame->playerCards);
 
         printw("Would you like to [H]it or [S]tand? ");
         option = toupper(getch());
 
         switch(option){
         case 'H':
-            pCard = cardList_removeFirst(pDeck);
-            cardList_addLast(&playerHand, pCard);
+            blackjack_deal(pGame, pGame->playerCards);
             break;
         case 'S':
             playersMove = 0;
@@ -82,10 +40,10 @@ void playBlackJack(void){
             break;
         };
 
-        handValue = cardList_blackjack(&playerHand);
+        handValue = blackjack_calculate(pGame->playerCards);
         if (handValue.value > 21){
             printw("\n\n");
-            printList(&playerHand);
+            printList(pGame->playerCards);
             printw("\nYou're bust!");
             gameAlive = 0;
             getch();
@@ -95,15 +53,14 @@ void playBlackJack(void){
     if (gameAlive > 0){
         // Dealer plays
         // Let's say the dealer stands on soft 17
-        blackjack_t dealerValue;
+        blackjack_result_t dealerValue;
         do {
-            pCard = cardList_removeFirst(pDeck);
-            cardList_addLast(&dealerHand, pCard);
+            blackjack_deal(pGame, pGame->dealerCards);
 
             printw("\n\nDealer cards:\n");
-            printList(&dealerHand);
+            printList(pGame->dealerCards);
 
-            dealerValue = cardList_blackjack(&dealerHand);
+            dealerValue = blackjack_calculate(pGame->dealerCards);
         } while (dealerValue.value < 17);
 
         if (dealerValue.value > 21){
