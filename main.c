@@ -72,9 +72,18 @@ void playBlackJack(gamescreen_t *screen){
         blackjack_deal(pGame, pGame->playerCards);
     }
 
+    int playerBlackJack = 0;
     int gameAlive = 1;
     int playersMove = 1;
-    blackjack_result_t handValue;
+    blackjack_result_t handValue = blackjack_calculate(pGame->playerCards);
+
+    if(handValue.value == 21){
+        playerBlackJack = 1;
+        playersMove = 0;
+        drawGame(screen, pGame, "You got Blackjack!");
+        usleep(2000 * 1000);
+    }
+
     char option;
     while (gameAlive > 0 && playersMove > 0){
         drawGame(screen, pGame, "Would you like to [H]it or [S]tand?");
@@ -111,12 +120,31 @@ void playBlackJack(gamescreen_t *screen){
             animateCard(screen->dealerWindow, pGame->dealerCards->last->card);
 
             dealerValue = blackjack_calculate(pGame->dealerCards);
+
+            // If the player has blackjack, we only draw one more card
+            // If the dealer also has blackjack, it's a tie, otherwise
+            // the player automatically wins.
+            // We're checking those conditions later on, and we've already
+            // drawn one card.
+            if (playerBlackJack == 1){
+                break;
+            }
         } while (dealerValue.value < 17);
+
+        int dealerBlackJack = 0;
+        if(dealerValue.value == 21 && pGame->dealerCards->length == 2){
+            dealerBlackJack = 1;
+        }
 
         if (dealerValue.value > 21){
             drawGame(screen, pGame, "You win!");
         } else if (handValue.value > dealerValue.value) {
             drawGame(screen, pGame, "You win!");
+        } else if (handValue.value == dealerValue.value) {
+            if (dealerBlackJack == 1 && playerBlackJack < 1){
+                drawGame(screen, pGame, "Dealer wins!");
+            }
+            drawGame(screen, pGame, "Game tied");
         } else {
             drawGame(screen, pGame, "Dealer wins!");
         }
