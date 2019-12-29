@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <curses.h>
+#include <time.h>
 #include <unistd.h>
 #include <ctype.h>
 #include "cards.h"
@@ -129,6 +130,8 @@ int main()
     initscr();
     cbreak();
     noecho();
+
+    srand(time(NULL));
 
     gamescreen_t *screen = malloc(sizeof(gamescreen_t));
 
