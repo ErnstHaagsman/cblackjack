@@ -120,6 +120,7 @@ char* printSuit(Suit suit){
 }
 
 char* printCard(card_t* pCard){
+    // "Queen of Diamonds" is 17 chars, and the longest possible card
     static char text[17];
     static char rank[5];
 
