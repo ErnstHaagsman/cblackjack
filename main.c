@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <curses.h>
 #include <unistd.h>
+#include <ctype.h>
 #include "cards.h"
 #include "blackjack.h"
 

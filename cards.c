@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "cards.h"
 
 void cardList_addFirst (cardlist_t *pList, card_t *pCard){
@@ -121,8 +122,8 @@ char* printSuit(Suit suit){
 
 char* printCard(card_t* pCard){
     // "Queen of Diamonds" is 17 chars, and the longest possible card
-    static char text[17];
-    static char rank[5];
+    static char text[18];
+    static char rank[6];
 
     switch(pCard->rank){
         case 11:
@@ -144,14 +145,4 @@ char* printCard(card_t* pCard){
 
     sprintf(text, "%s of %s", rank, printSuit(pCard->suit));
     return text;
-}
-
-void printList(cardlist_t *pDeck){
-    cardnode_t *pCurrent = pDeck->first;
-    card_t *pCard;
-    do {
-        pCard = pCurrent->card;
-        printw("%s\n", printCard(pCard));
-        pCurrent = pCurrent->next;
-    } while(pCurrent != NULL);
 }

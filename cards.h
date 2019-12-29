@@ -44,6 +44,5 @@ cardlist_t* newDeck(void);
 
 char* printSuit(Suit suit);
 char* printCard(card_t* pCard);
-void printList(cardlist_t *pDeck);
 
 #endif // CARDS_H
